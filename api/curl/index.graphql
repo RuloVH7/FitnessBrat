@@ -87,11 +87,16 @@ type ServingSizesEntry {
 }
 
 type Query {
-  myQuery( ingr: String): Root
+  mySearchy( ingr: String): Root
     @rest(
-      endpoint: "https://api.edamam.com/api/food-database/v2/parser?app_id=$app_id&app_key$app_key"
-      headers: [{ name: "accept", value: "application/json" }]
+      endpoint: "https://api.edamam.com/api/food-database/v2/parser?app_id=$app_id&app_key=$app_key"
+      headers: [
+        { name: "accept", value: "application/json" }
+        {
+          name: "authorization"
+          value: "Apikey shestipery::local.io+1000::527b507c18fbfb92f2b22162fb6395a6f21b60737f54f2ec6b62bbdd17d72136"
+        }
+      ]
       configuration: "edamam"
-
     )
 }
