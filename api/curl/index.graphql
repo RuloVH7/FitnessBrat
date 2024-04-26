@@ -19,7 +19,6 @@ type Food1 {
   label: String
   nutrients: Nutrients1
   servingSizes: [ServingSizesEntry]
-  servingsPerContainer: Int
 }
 
 type HintsEntry {
@@ -44,7 +43,7 @@ type Next {
 }
 
 type Nutrients {
-  CHOCDF: Float
+  CHOCDF: Int
   ENERC_KCAL: Int
   FAT: Float
   FIBTG: Float
@@ -53,7 +52,7 @@ type Nutrients {
 
 type Nutrients1 {
   CHOCDF: Float
-  ENERC_KCAL: Int
+  ENERC_KCAL: Float
   FAT: Float
   FIBTG: Float
   PROCNT: Float
@@ -87,16 +86,10 @@ type ServingSizesEntry {
 }
 
 type Query {
-  mySearchy( ingr: String): Root
+  search(ingr: String): Root
     @rest(
       endpoint: "https://api.edamam.com/api/food-database/v2/parser?app_id=$app_id&app_key=$app_key"
-      headers: [
-        { name: "accept", value: "application/json" }
-        {
-          name: "authorization"
-          value: "Apikey shestipery::local.io+1000::527b507c18fbfb92f2b22162fb6395a6f21b60737f54f2ec6b62bbdd17d72136"
-        }
-      ]
+      headers: [{ name: "accept", value: "application/json" }]
       configuration: "edamam"
     )
 }
