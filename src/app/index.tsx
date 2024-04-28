@@ -1,7 +1,25 @@
-import { StyleSheet, Text, View, FlatList, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, Button, ActivityIndicator } from 'react-native';
 import FoodListItem from '../components/foodListItem';
 import { useState } from 'react';
+import { gql, useQuery } from '@apollo/client';
 
+const query = gql`
+query myQuery($ingr: String) {
+  search( ingr: $ingr) {
+    text
+    hints {
+      food {
+        label
+        brand
+        foodId
+        nutrients {
+          ENERC_KCAL
+      }
+    }
+  }
+}
+}
+`;
 
 const foodItems = [
   { label: 'Pozole', cal: 789, brand: 'La Casa de Toño'},
@@ -9,14 +27,26 @@ const foodItems = [
   { label: 'Alitas', cal: 500, brand: 'Las Miches'}
 ];
 
-export default function App() 
+export default function SearchScreen() 
 {
 
   const [search, setSearch] = useState('');
+  const {data, loading, error} = useQuery(query, { variables: { ingr: 'Pizza' }});
   const performSearch = () => {
     console.warn('Searching for: ', search)
     setSearch('');
-  }
+  };
+
+if (loading){
+  return <ActivityIndicator/>;
+}
+
+if (error){
+  return <Text>Failed to search</Text>;
+}
+
+console.log(JSON.stringify(data, null, 2))
+
   return (
     <View style={styles.container}>
       {/* Food item view, or cointainer */}
