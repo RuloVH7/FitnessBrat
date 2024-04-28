@@ -1,13 +1,15 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+
+{/* Now that we have the array we just simple access to the objects (everything inside Hints) */}
 const FoodListItem = ({ item }) => 
     {
       return (
         <View style={styles.container}>
           <View style={styles.foodContainer}>
-            <Text style={styles.foodItem}>{item.label}</Text>
-            <Text style={styles.foodProperties}>{item.cal}, {item.brand}</Text>
+            <Text style={styles.foodItem}>{item.food.label}</Text>
+            <Text style={styles.foodProperties}>{item.food.nutrients.ENERC_KCAL} Cal, {item.food.brand}</Text>
           </View> 
           <MaterialCommunityIcons name="cookie-plus" size={24} color="royalblue" />
         </View>

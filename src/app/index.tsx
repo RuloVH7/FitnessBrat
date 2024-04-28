@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, FlatList, TextInput, Button, ActivityIndicator } from 'react-native';
 import FoodListItem from '../components/foodListItem';
 import { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useLazyQuery } from '@apollo/client';
 
 const query = gql`
 query myQuery($ingr: String) {
@@ -26,26 +26,27 @@ const foodItems = [
   { label: 'Huarache', cal: 690, brand: 'Mercado La Prohogar'},
   { label: 'Alitas', cal: 500, brand: 'Las Miches'}
 ];
-
+// Here we define the lazy query, which will run the query when a function is triggered, in this case RunSearch
 export default function SearchScreen() 
 {
 
   const [search, setSearch] = useState('');
-  const {data, loading, error} = useQuery(query, { variables: { ingr: 'Pizza' }});
+  const [ runSearch,{data, loading, error}] = useLazyQuery(query);
   const performSearch = () => {
-    console.warn('Searching for: ', search)
-    setSearch('');
+    // We can render the variable ingr here, so instead defining it inside the query
+    runSearch({ variables: {ingr: search}});
+    // This removes the text from the seacrh container setSearch('');
   };
-
-if (loading){
-  return <ActivityIndicator/>;
-}
 
 if (error){
   return <Text>Failed to search</Text>;
 }
 
 console.log(JSON.stringify(data, null, 2))
+
+{/* Here we save in a variable the object where the info is stored. With ? we indicate that we will only access if there is data to initialize the function
+    if not then it will send an empty array */}
+const items = data?.search?.hints || [];
 
   return (
     <View style={styles.container}>
@@ -57,9 +58,13 @@ console.log(JSON.stringify(data, null, 2))
         style={styles.input}
       />
       {search && <Button title='Search' onPress={performSearch}/>}
+      {/* As we could see in the logs, the data is an object, and the FlatList spects an array, so we have to access to the array from that object
+          Also, we call the function loading, and whenm it is true it will display an activity indicator */}
+      {loading && <ActivityIndicator/>}
       <FlatList
-        data={foodItems}
+        data={items}
         renderItem={({ item }) => <FoodListItem item={item}/>}
+        ListEmptyComponent={() => <Text>Search a food</Text>}
         contentContainerStyle={{gap: 5}} 
       /> 
     </View>
