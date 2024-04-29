@@ -1,87 +1,60 @@
-import { StyleSheet, Text, View, FlatList, TextInput, Button, ActivityIndicator } from 'react-native';
-import FoodListItem from '../components/foodListItem';
-import { useState } from 'react';
-import { gql, useLazyQuery } from '@apollo/client';
+import { View, Text, FlatList, Button, StyleSheet} from "react-native";
+import { Link } from "expo-router";
+import FoodListItem from "../components/foodListItem";
 
-const query = gql`
-query myQuery($ingr: String) {
-  search( ingr: $ingr) {
-    text
-    hints {
-      food {
-        label
-        brand
-        foodId
-        nutrients {
-          ENERC_KCAL
-      }
-    }
-  }
-}
-}
-`;
 
 const foodItems = [
-  { label: 'Pozole', cal: 789, brand: 'La Casa de Toño'},
-  { label: 'Huarache', cal: 690, brand: 'Mercado La Prohogar'},
-  { label: 'Alitas', cal: 500, brand: 'Las Miches'}
-];
-// Here we define the lazy query, which will run the query when a function is triggered, in this case RunSearch
-export default function SearchScreen() 
-{
+    {
+        food: { label: 'Pozole', nutrients: {ENERC_KCAL: 100}, brand: 'La Casa de Toño'},
+    },
+    {
+        food: { label: 'Pizza', nutrients: {ENERC_KCAL: 200}, brand: 'Little Caesars'},
+    },
+    {
+        food: { label: 'Tuna', nutrients: {ENERC_KCAL: 830}, brand: 'Tuny'},
+    },
+  ];
+export default function HomeScreen() {
+    return (
+        <View style={ styles.container }>
+            <View style={ styles.header }>
+                <Text style={ styles.title }>Calories</Text>
+                <Text>1700 - 343 = 38</Text>
+            </View>
 
-  const [search, setSearch] = useState('');
-  const [ runSearch,{data, loading, error}] = useLazyQuery(query);
-  const performSearch = () => {
-    // We can render the variable ingr here, so instead defining it inside the query
-    runSearch({ variables: {ingr: search}});
-    // This removes the text from the seacrh container setSearch('');
-  };
+            <View style={ styles.header }>
+                <Text style={ styles.title }>Today's Log Food</Text>
+                <Link href="/searchScreen" asChild>
+                    <Button title="ADD FOOD" />
+                </Link>
+            </View>
 
-if (error){
-  return <Text>Failed to search</Text>;
-}
-
-console.log(JSON.stringify(data, null, 2))
-
-{/* Here we save in a variable the object where the info is stored. With ? we indicate that we will only access if there is data to initialize the function
-    if not then it will send an empty array */}
-const items = data?.search?.hints || [];
-
-  return (
-    <View style={styles.container}>
-      {/* Food item view, or cointainer */}
-      <TextInput 
-        value={search} 
-        onChangeText={setSearch} 
-        placeholder="Search..." 
-        style={styles.input}
-      />
-      {search && <Button title='Search' onPress={performSearch}/>}
-      {/* As we could see in the logs, the data is an object, and the FlatList spects an array, so we have to access to the array from that object
-          Also, we call the function loading, and whenm it is true it will display an activity indicator */}
-      {loading && <ActivityIndicator/>}
-      <FlatList
-        data={items}
-        renderItem={({ item }) => <FoodListItem item={item}/>}
-        ListEmptyComponent={() => <Text>Search a food</Text>}
-        contentContainerStyle={{gap: 5}} 
-      /> 
-    </View>
-  );
+            <FlatList
+                data={foodItems}
+                contentContainerStyle={{gap: 5}}
+                renderItem={({item}) => <FoodListItem item={item} />}
+            />
+        </View>
+    );
 }
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 10,
-    gap: 10
-  },
-  input: {
-    backgroundColor: '#f2f2f2',
-    padding: 10,
-    borderRadius: 20,
-  }
-});
+    container: {
+        backgroundColor: 'white', 
+        flex: 1, 
+        padding: 10, 
+        gap: 10,
+    },
+    header : {
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 16, 
+        fontWeight: '500', 
+        flex: 1, 
+        color: 'dimgray'
+    }
+})
