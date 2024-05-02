@@ -46,6 +46,7 @@ export default function HomeScreen() {
         <Text>Failed to fetch data</Text>
     }
 
+    console.log(dayjs().format('YYYY-MM-DD'))
     console.log(data);
     return (
         <View style={ styles.container }>
