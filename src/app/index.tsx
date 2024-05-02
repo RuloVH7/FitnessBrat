@@ -29,24 +29,22 @@ const foodItems = [
     },
   ];
 export default function HomeScreen() {
-
     const user_id = 'Raul';
-    const {data, loading, error} = useQuery(query, {
+    const { data, loading, error } = useQuery(query, {
         variables: {
             date: dayjs().format('YYYY-MM-DD'),
             user_id,
-        }
-    })
-
+        },
+    });
     if (loading){
-        return <ActivityIndicator />
+        return <ActivityIndicator />;
     }
 
     if (error){
-        <Text>Failed to fetch data</Text>
+        <Text>Failed to fetch data</Text>;
     }
 
-    console.log(dayjs().format('YYYY-MM-DD'))
+    console.log(dayjs().format('YYYY-MM-DD'));
     console.log(data);
     return (
         <View style={ styles.container }>
