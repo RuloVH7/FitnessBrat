@@ -1,6 +1,20 @@
-import { View, Text, FlatList, Button, StyleSheet} from "react-native";
+import { View, Text, FlatList, Button, StyleSheet, ActivityIndicator} from "react-native";
 import { Link } from "expo-router";
 import FoodListItem from "../components/foodListItem";
+import { gql, useQuery } from "@apollo/client";
+import dayjs from "dayjs";
+
+const query = gql`
+query MyQuery($date: Date!, $user_id: String!) {
+  food_logByDate(date: $date, user_id: $user_id) {
+    created_at
+    label
+    food_id
+    id
+    kcal
+  }
+}
+`;
 
 
 const foodItems = [
@@ -15,6 +29,24 @@ const foodItems = [
     },
   ];
 export default function HomeScreen() {
+
+    const user_id = 'Raul';
+    const {data, loading, error} = useQuery(query, {
+        variables: {
+            date: dayjs().format('YYYY-MM-DD'),
+            user_id,
+        }
+    })
+
+    if (loading){
+        return <ActivityIndicator />
+    }
+
+    if (error){
+        <Text>Failed to fetch data</Text>
+    }
+
+    console.log(data);
     return (
         <View style={ styles.container }>
             <View style={ styles.header }>
