@@ -6,7 +6,7 @@ import { gql, useQuery } from "@apollo/client";
 import dayjs from "dayjs";
 
 const query = gql`
-query MyQuery($date: Date!, $user_id: String!) {
+query food_logByDateQ($date: Date!, $user_id: String!) {
   food_logByDate(date: $date, user_id: $user_id) {
     created_at
     label
@@ -18,7 +18,7 @@ query MyQuery($date: Date!, $user_id: String!) {
 `;
 
 export default function HomeScreen() {
-    const user_id = 'Bobr';
+    const user_id = 'Raul';
     const { data, loading, error } = useQuery(query, {
         variables: {
             date: dayjs().format('YYYY-MM-DD'),
